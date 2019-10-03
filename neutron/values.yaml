@@ -44,6 +44,7 @@ images:
     neutron_ironic_agent: docker.io/openstackhelm/neutron:ocata-ubuntu_xenial
     dep_check: quay.io/stackanetes/kubernetes-entrypoint:v0.3.1
     image_repo_sync: docker.io/docker:17.07.0
+    tf_neutron_init: opencontrailnightly/contrail-openstack-neutron-init:ocata-master-latest
   pull_policy: "IfNotPresent"
   local_registry:
     active: false
@@ -145,6 +146,9 @@ dependencies:
           - endpoint: node
             service: local_image_registry
     targeted:
+      tungstenfabric:
+        server:
+          daemonset: []
       sriov: {}
       l2gateway: {}
       bagpipe_bgp: {}
@@ -1901,6 +1905,14 @@ conf:
       agent:
         extensions: ""
     ml2_conf_sriov: null
+    tungstenfabric:
+      APISERVER:
+        api_server_ip: config-api-server.tf
+        api_server_port: 8082
+        contrail_extensions: "ipam:neutron_plugin_contrail.plugins.opencontrail.contrail_plugin_ipam.NeutronPluginContrailIpam,policy:neutron_plugin_contrail.plugins.opencontrail.contrail_plugin_policy.NeutronPluginContrailPolicy,route-table:neutron_plugin_contrail.plugins.opencontrail.contrail_plugin_vpc.NeutronPluginContrailVpc,contrail:None,service-interface:None,vf-binding:None"
+        multi_tenancy: True
+      KEYSTONE:
+        insecure: True
     taas:
       taas:
         enabled: False
